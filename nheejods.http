@@ -1,0 +1,6 @@
+@nheejods_HostAddress = http://localhost:5209
+
+GET {{nheejods_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
