@@ -1,6 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using nheejods.Contexts;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<MySQLDbContext>((option) => {
+    string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (connectionString == null || string.IsNullOrEmpty(connectionString.Trim())) throw new Exception("Database connection string not initialize");
+
+    option.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(connectionString), (mysqlOption) => {
+        mysqlOption.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+    });
+
+    Console.WriteLine("Database connection successfully");
+});
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
