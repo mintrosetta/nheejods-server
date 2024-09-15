@@ -12,9 +12,12 @@ public class User
     public int Id { get; set; }
 
     [Required]
+    [MaxLength(100)]
     [Column("email")]
     public string Email { get; set; } = string.Empty;
 
+    [MaxLength(256)]
+    [Required]
     [Column("password")]
     public string Password { get; set; } = string.Empty;
 

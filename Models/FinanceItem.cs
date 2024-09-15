@@ -16,6 +16,8 @@ public class FinanceItem
     [Column("box_id")]
     public int BoxId { get; set; }
 
+    [Required]
+    [MaxLength(150)]
     [Column("title")]
     public string title { get; set; } = string.Empty;
 
