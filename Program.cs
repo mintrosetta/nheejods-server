@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using nheejods.Contexts;
+using nheejods.UnitOfWorks;
+using nheejods.UnitOfWorks.Interfaces;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add database context
 builder.Services.AddDbContext<MySQLDbContext>((option) => {
     string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     if (connectionString == null || string.IsNullOrEmpty(connectionString.Trim())) throw new Exception("Database connection string not initialize");
@@ -15,6 +17,10 @@ builder.Services.AddDbContext<MySQLDbContext>((option) => {
 
     Console.WriteLine("Database connection successfully");
 });
+
+// Add services to the container.
+builder.Services.AddScoped<IRepoUnitOfWork, RepoUnitOfWork>();
+builder.Services.AddScoped<IServiceUnitOfWork, ServiceUnitOfWork>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
