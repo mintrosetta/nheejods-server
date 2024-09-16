@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using nheejods.Contexts;
 using nheejods.UnitOfWorks;
 using nheejods.UnitOfWorks.Interfaces;
@@ -21,6 +24,24 @@ builder.Services.AddDbContext<MySQLDbContext>((option) => {
 // Add services to the container.
 builder.Services.AddScoped<IRepoUnitOfWork, RepoUnitOfWork>();
 builder.Services.AddScoped<IServiceUnitOfWork, ServiceUnitOfWork>();
+builder.Services.AddAuthentication(option => 
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option => 
+{
+    option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>(),
+        ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Get<string>(),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Get<string>()!))
+    };
+});
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,6 +58,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // add middileware
 
