@@ -36,4 +36,14 @@ public class UserService : IUserService
 
         return (user != null);
     }
+
+    public Task<User?> FindByEmailAsync(string email)
+    {
+        return this.repo.UserRepository.Find(user => user.Email.Equals(email)).FirstOrDefaultAsync();
+    }
+
+    public async Task<string?> GetPasswordByUserEmailAsync(string email)
+    {
+        return await this.repo.UserRepository.Find(user => user.Email.Equals(email)).Select(user => user.Password).FirstOrDefaultAsync();
+    }
 }

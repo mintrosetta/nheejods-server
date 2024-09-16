@@ -5,4 +5,5 @@ namespace nheejods.UnitOfWorks.Interfaces;
 public interface IServiceUnitOfWork
 {
     public IUserService UserService { get; }
+    public IJwtService JwtService { get; }
 }
